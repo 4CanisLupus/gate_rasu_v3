@@ -13,7 +13,6 @@ find_library(PTHREAD_LIBRARY pthread)
 
 set(PROJECT_SOURCES
         main.cpp
-        src/plc_connector.cpp
         src/loggingcategories.cpp
         include/loggingcategories.h
         include/dtsclient.h
@@ -26,7 +25,8 @@ add_executable(${PROJECT_NAME}
     include/loggingcategories.h
     include/dtsclient.h
     include/errkey.h
-    include/values.h)
+    include/values.h
+    src/loggingcategories.cpp)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
