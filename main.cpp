@@ -46,8 +46,10 @@ extern void printLogs(QString func_name, QString log_word, Logs_Type type_log);
 static Value value;
 
 //test vector
-static QVector<int> t_test_int;
-int testVector();
+static QVector<float> t_test_float;
+static QVector<int32_t> t_test_int;
+float testVector_float();
+int testVector_int();
 
 int main(int argc, char *argv[])
 {
@@ -62,48 +64,34 @@ int main(int argc, char *argv[])
     }
 
 
+
+    //    int t_count;
+
     //добавим бесконечный цикл
     for(;;sleep(1))
+   // while (true)
     {
+//        t_count++;
+//        if (t_count>1000)t_count = 0;
+
+
         //test
-        for (int i{0}; i<17;i++)
+        for (int i{0}; i<17;i++,sleep(1))
         {
-            t_test_int.push_back(testVector());
-        }
-        for (int i{0}; i<17;i++)
-        {
-             printLogs("placeIn_PPD number: ", QString::number(t_test_int[i]),log_info);
-        }
+            t_test_float.resize(16);
+            t_test_float[i] = testVector_float();
 
+            //
+             printLogs("main placeIn_PPD", "0!",log_debug);
+        // Сформировать аналоговое значение
+                makeAValue(&value,i,  0   , t_test_float[i]);
 
-                printLogs("placeIn_PPD_4", "0!",log_debug);
-                // Сформировать аналоговое значение
-                makeAValue(&value,0,  0   ,  (float)(0.1+ t_test_int[0]));
-                makeAValue(&value,1,  0   ,  (float)(1.2+ t_test_int[1])    );
-                makeAValue(&value,2,  0   ,  (float)(2.2+ t_test_int[2])   );
-                makeAValue(&value,3,  0   ,  (float)(3.2+ t_test_int[3])    );
-                makeAValue(&value,4,  0   ,  (float)(4.2+ t_test_int[4])    );
-                makeAValue(&value,5,  0   ,  (float)(5.2+ t_test_int[5])   );
-                makeAValue(&value,6,  0   ,  (float)(0.2+ t_test_int[6])   );
-                makeAValue(&value,7,  0   ,  (float)(1.3+ t_test_int[7])    );
-                makeAValue(&value,8,  0   ,  (float)(2.3+ t_test_int[8])    );
-                makeAValue(&value,9,  0   ,  (float)(3.3+ t_test_int[9])    );
-                makeAValue(&value,10,  0   , (float)(4.3+ t_test_int[10])    );
-                makeAValue(&value,11,  0   , (float)(5.3+ t_test_int[11])    );
-                makeAValue(&value,12,  0   , (float)(0.3+ t_test_int[12])    );
-                makeAValue(&value,13,  0   , (float)(1.3+ t_test_int[13])    );
-                makeAValue(&value,14,  0   , (float)(2.3+ t_test_int[14])    );
-                makeAValue(&value,15,  0   , (float)(3.3+ t_test_int[15])    );
-                makeAValue(&value,16,  0   , (float)(4.3 + t_test_int[16])   );
-
-                //
-                printLogs("placeIn_PPD_4", "1!",log_debug);
+                //                printLogs("placeIn_PPD A val:", QString::number(t_test_float[i]),log_debug);
                 switch( client.put( value ) )
                 {
                     case ERROR_RET :
                     {
                          printLogs("placeIn_PPD", "Analog value put error: " +QString::number( client.getError()),log_critical);
-                        //std::cout <<"Analog value put error: "<<client.getError()<<std::endl;
                     }
                     return  a.exec();
                     case WARNING_RET :
@@ -113,14 +101,18 @@ int main(int argc, char *argv[])
                     break;
                     default : break;
                 }
-                //
-                printLogs("placeIn_PPD_4", "2!",log_debug);
+           }
+
+           for (int i{0}; i<8;i++)
+           {
+                   t_test_int.resize(8);
+                   t_test_int[i] = testVector_int();
+
             // Сформировать двоичное значение
-                     makeBValue(&value,0,     0   ,     t_test_int[0] % 2  );
-                     makeBValue(&value,1,     0   ,     t_test_int[1] % 2  );
-                     makeBValue(&value,2,     0   ,     t_test_int[2] % 2  );
-                     makeBValue(&value,3,     0   ,     t_test_int[3] % 2  );
-                     makeBValue(&value,4,     0   ,     t_test_int[4] % 2  );
+                  if (i < 5)
+                  {
+                         makeBValue(&value,i, 0,t_test_int[i] % 2  );
+
                   // Поместить в канал ППД двоичные данные с индексом 0
                    switch( client.put( value ) )
                     {
@@ -136,16 +128,9 @@ int main(int argc, char *argv[])
                     break;
                     default : break;
                     }
-
+                   }
             // Сформировать целочисленное значение
-                        makeIValue(&value,0,    1   ,    t_test_int[0]  );
-                        makeIValue(&value,1,    1   ,    t_test_int[1]+1  );
-                        makeIValue(&value,2,    1   ,    t_test_int[2]+2  );
-                        makeIValue(&value,3,    1   ,    t_test_int[3]+3  );
-                        makeIValue(&value,4,    1   ,    t_test_int[4]+4  );
-                        makeIValue(&value,5,    1   ,    t_test_int[5]+5  );
-                        makeIValue(&value,6,    1   ,    t_test_int[6]+6  );
-                        makeIValue(&value,7,    1   ,    t_test_int[7]+7  );
+                makeIValue(&value,i,    1   ,    t_test_int[i]  );
 
                         // Поместить в канал ППД целочисленные данные с индексом 0
                         switch( client.put( value ) )
@@ -162,14 +147,14 @@ int main(int argc, char *argv[])
                         break;
                         default : break;
                         }
-
-                // printLogs("placeIn_PPD", "Ok!",log_info);
-
+              }
+                //
+                        printLogs("placeIn_PPD", "Ok!",log_info);
     }
 
     // Задержка для принятия последнего значения
-    sleep( 5 );
-    printf( "Done!\n" );
+    //sleep( 5 );
+
     return a.exec();
 }
 
@@ -301,8 +286,17 @@ void placeIn_PPD_4_manual(DTSClient client)
     return;
 }
 
+float testVector_float()
+{
+    int lower_bound = 1;
+    int upper_bound = 100;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(lower_bound, upper_bound);
+    return static_cast<float>(distr(gen));
+}
 
-int testVector()
+int testVector_int()
 {
     int lower_bound = 1;
     int upper_bound = 100;
@@ -311,3 +305,4 @@ int testVector()
     std::uniform_int_distribution<> distr(lower_bound, upper_bound);
     return distr(gen);
 }
+
